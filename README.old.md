@@ -1,2 +1,0 @@
-# krakatoa-pictures
-React practice.
