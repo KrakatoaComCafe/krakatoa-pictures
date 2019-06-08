@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {Link} from 'react-router';
+import {Link} from 'react-router-dom';
 
 export default class Foto extends Component {
     render() {
@@ -51,7 +51,7 @@ class FotoInfo extends Component {
                     {
                         this.props.foto.likers.map(liker => {
                             return (
-                                <Link to={`/timeline/${liker.login}`}>
+                                <Link key={liker.login} to={`timeline/${liker.login}`}>
                                     {liker.login}
                                 </Link>
                             );
