@@ -1,16 +1,17 @@
 import React, {Component} from "react";
+import {Link} from 'react-router-dom';
 
 export default class Foto extends Component {
     render() {
         return (
             <div className="foto">
 
-                <FotoHeader/>
+                <FotoHeader foto={this.props.foto}/>
 
                 <img alt="foto" className="foto-src"
-                     src={this.props.imageSource}/>
+                     src={this.props.foto.urlFoto}/>
 
-                <FotoInfo/>
+                <FotoInfo foto={this.props.foto}/>
 
                 <FotoAtualizacoes/>
 
@@ -26,16 +27,16 @@ class FotoHeader extends Component {
                 <figure className="foto-usuario">
 
                     <img
-                        src="https://cdn1.iconfinder.com/data/icons/ninja-things-1/1772/ninja-simple-512.png"
+                        src={this.props.foto.urlPerfil}
                         alt="" role="img"/>
 
                     <figcaption className="foto-usuario">
-                        <a href="#">
-                            alots
-                        </a>
+                        <Link to={`/timeline/${this.props.foto.loginUsuario}`}>
+                            {this.props.foto.loginUsuario}
+                        </Link>
                     </figcaption>
                 </figure>
-                <time className="foto-data">03/10/2016 20:13</time>
+                <time className="foto-data">{this.props.foto.horario}</time>
             </header>
         );
     }
@@ -47,15 +48,15 @@ class FotoInfo extends Component {
             <div className="foto-info">
                 <div className="foto-info-likes">
 
-                    <a href="#">
-                        alots_ssa
-                    </a>
-
-                    ,
-
-                    <a href="#">
-                        rafael_rollo
-                    </a>
+                    {
+                        this.props.foto.likers.map(liker => {
+                            return (
+                                <Link key={liker.login} to={`timeline/${liker.login}`}>
+                                    {liker.login}
+                                </Link>
+                            );
+                        })
+                    }
 
                     curtiram
 
@@ -63,28 +64,25 @@ class FotoInfo extends Component {
 
                 <p className="foto-info-legenda">
                     <a className="foto-info-autor">autor </a>
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est, illo?
+                    {this.props.foto.comentario}
                 </p>
 
                 <ul className="foto-info-comentarios">
-                    <li className="comentario">
-                        <a className="foto-info-autor">seguidor </a>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quidem ad, molestiae.
-                    </li>
-                    <li className="comentario">
-                        <a className="foto-info-autor">seguidor </a>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sunt cumque earum
-                        molestias voluptatem
-                        modi nihil sit magnam ratione eveniet distinctio magni error asperiores
-                        dignissimos tempora
-                        expedita, laborum ex soluta hic maiores veritatis deserunt.
-                    </li>
-                    <li className="comentario">
-                        <a className="foto-info-autor">seguidor </a>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsum laudantium quae
-                        ab fuga odio
-                        delectus maiores voluptatibus sit commodi quidem.
-                    </li>
+
+
+                    {
+                        this.props.foto.comentarios.map(comentario => {
+                            return (
+                                <li key={comentario.id} className="comentario">
+                                    <Link to={`/timeline/${comentario.login}`} className="foto-info-autor">
+                                        {comentario.login}
+                                    </Link>
+                                    {comentario.texto}
+                                </li>
+                            );
+                        })
+                    }
+
                 </ul>
             </div>
         );
