@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
-import queryString from 'querystring';
+import {browserHistory} from 'react-router';
 
 export default class Login extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            msg: queryString.parse(this.props.location.search).msg
+            msg: this.props.location.query.msg
         };
         // this.envia = this.envia.bind(this);
     }
@@ -36,7 +36,7 @@ export default class Login extends Component {
             })
             .then(token => {
                 localStorage.setItem('auth-token', token);
-                this.props.history.push('timeline');
+                browserHistory.push('/timeline');
 
             })
             .catch(err => {

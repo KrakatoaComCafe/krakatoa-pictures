@@ -1,19 +1,32 @@
-import React from 'react'
+import React, {Component} from 'react'
 import Header from './components/Header';
 import Timeline from './components/Timeline';
 
-function App() {
-    return (
-        <div id="root">
-            <div className="main">
+class App extends Component{
 
-                <Header />
+    constructor(props) {
+        super(props);
 
-                <Timeline />
+    }
 
+    componentDidMount() {
+        console.log(this.props.params.login);
+    }
+
+    render()
+    {
+        return (
+            <div id="root">
+                <div className="main">
+
+                    <Header/>
+
+                    <Timeline login={this.props.params.login}/>
+
+                </div>
             </div>
-        </div>
-    );
+        );
+    }
 }
 
 export default App;
