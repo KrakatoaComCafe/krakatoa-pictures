@@ -3,18 +3,26 @@ import Foto from './Foto';
 
 export default class Timeline extends Component {
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             fotos: []
         }
+        this.login = this.props.login;
     }
 
-    componentDidMount() {
+    loadFotos() {
+        let urlPerfil;
 
-		// fetch('https://krakatoa-picture-backend.herokuapp.com/api/public/fotos/krakatoa')
-		// fetch('http://localhost:9090/api/public/fotos/krakatoa')
-		fetch(`https://instalura-api.herokuapp.com/api/fotos?X-AUTH-TOKEN=${localStorage.getItem('auth-token')}`)
+        if(this.login === undefined) {
+            urlPerfil = `https://instalura-api.herokuapp.com/api/fotos?X-AUTH-TOKEN=${localStorage.getItem('auth-token')}`;
+        } else {
+            urlPerfil = `https://instalura-api.herokuapp.com/api/public/fotos/${this.login}`;
+        }
+
+        // fetch('https://krakatoa-picture-backend.herokuapp.com/api/public/fotos/krakatoa')
+        // fetch('http://localhost:9090/api/public/fotos/krakatoa')
+        fetch(urlPerfil)
             .then(res => res.json())
             .then(fotos => {
                 this.setState({
@@ -22,6 +30,18 @@ export default class Timeline extends Component {
                 });
             });
         // fetch('http://localhost:8080/api/public/fotos/rafael');
+    }
+
+    componentDidMount() {
+        this.loadFotos();
+
+    }
+
+    componentWillReceiveProps(nextProps, nextContext) {
+        if(nextProps.login !== undefined) {
+            this.login = nextProps.login;
+            this.loadFotos();
+        }
     }
 
     render() {
