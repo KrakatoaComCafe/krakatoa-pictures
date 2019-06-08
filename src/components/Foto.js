@@ -13,7 +13,7 @@ export default class Foto extends Component {
 
                 <FotoInfo foto={this.props.foto}/>
 
-                <FotoAtualizacoes/>
+                <FotoAtualizacoes foto={this.props.foto}/>
 
             </div>
         );
@@ -90,10 +90,39 @@ class FotoInfo extends Component {
 }
 
 class FotoAtualizacoes extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            likeada: this.props.foto.likeada
+        }
+    }
+
+    like(event) {
+        event.preventDefault();
+        const url = `https://instalura-api.herokuapp.com/api/fotos/${this.props.foto.id}` +
+            `/like?X-AUTH-TOKEN=${localStorage.getItem('auth-token')}`;
+
+        fetch(url, {method: 'POST'})
+            .then(res => {
+                if (res.ok) {
+                    return res.json();
+                } else {
+                    throw new Error('Não foi possível realizar o like da foto');
+                }
+            })
+            .then(liker => {
+                this.setState({likeada: !this.state.likeada});
+            })
+    }
+
     render() {
         return (
             <section className="fotoAtualizacoes">
-                <a href="#" className="fotoAtualizacoes-like">Likar</a>
+                <a onClick={this.like.bind(this)}
+                   className={this.state.likeada ? 'fotoAtualizacoes-like-ativo' : 'fotoAtualizacoes-like'}>
+                    Likar
+                </a>
                 <form className="fotoAtualizacoes-form">
                     <input type="text" placeholder="Adicione um comentário..."
                            className="fotoAtualizacoes-form-campo"/>
