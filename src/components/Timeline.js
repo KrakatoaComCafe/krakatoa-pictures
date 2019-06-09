@@ -1,5 +1,8 @@
 import React, {Component} from "react";
 import Foto from './Foto';
+import {URL_LOCAL} from '../environment';
+
+const URL = URL_LOCAL;
 
 export default class Timeline extends Component {
 
@@ -15,9 +18,9 @@ export default class Timeline extends Component {
         let urlPerfil;
 
         if(this.login === undefined) {
-            urlPerfil = `https://instalura-api.herokuapp.com/api/fotos?X-AUTH-TOKEN=${localStorage.getItem('auth-token')}`;
+            urlPerfil = URL + `/api/fotos?X-AUTH-TOKEN=${localStorage.getItem('auth-token')}`;
         } else {
-            urlPerfil = `https://instalura-api.herokuapp.com/api/public/fotos/${this.login}`;
+            urlPerfil = URL + `/api/public/fotos/${this.login}`;
         }
 
         // fetch('https://krakatoa-picture-backend.herokuapp.com/api/public/fotos/krakatoa')

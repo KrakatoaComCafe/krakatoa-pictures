@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import {browserHistory} from  'react-router';
+import {URL_LOCAL} from '../environment';
 
+const URL = URL_LOCAL;
 
 export default class Login extends Component {
 
@@ -27,7 +29,7 @@ export default class Login extends Component {
         };
 
         //fetch('http://localhost:8080/api/public/login')
-        fetch('https://instalura-api.herokuapp.com/api/public/login', requestInfo)
+        fetch( URL + '/api/public/login', requestInfo)
             .then(res => {
                 if (res.ok) {
                     return res.text();
