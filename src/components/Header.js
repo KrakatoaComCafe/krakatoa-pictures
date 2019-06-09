@@ -1,8 +1,8 @@
 import React, {Component} from "react";
 import Pubsub from 'pubsub-js';
-import {URL_LOCAL} from '../environment';
+import {URL_LOCAL, URL_HEROKU} from '../environment';
 
-const URL = URL_LOCAL;
+const URL = URL_HEROKU;
 
 export default class Header extends Component {
 

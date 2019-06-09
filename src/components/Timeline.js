@@ -1,9 +1,10 @@
 import React, {Component} from "react";
 import Foto from './Foto';
 import Pubsub from 'pubsub-js';
-import {URL_LOCAL} from '../environment';
+import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
+import {URL_LOCAL, URL_HEROKU} from '../environment';
 
-const URL = URL_LOCAL;
+const URL = URL_HEROKU;
 
 export default class Timeline extends Component {
 
@@ -26,7 +27,7 @@ export default class Timeline extends Component {
     loadFotos() {
         let urlPerfil;
 
-        if(this.login === undefined) {
+        if (this.login === undefined) {
             urlPerfil = URL + `/api/fotos?X-AUTH-TOKEN=${localStorage.getItem('auth-token')}`;
         } else {
             urlPerfil = URL + `/api/public/fotos/${this.login}`;
@@ -50,7 +51,7 @@ export default class Timeline extends Component {
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
-        if(nextProps.login !== undefined) {
+        if (nextProps.login !== undefined) {
             this.login = nextProps.login;
             this.loadFotos();
         }
@@ -61,17 +62,16 @@ export default class Timeline extends Component {
 
             <div className="fotos container">
 
-                {
-                    this.state.fotos.map(foto =>
-                        <Foto key={foto.id} foto={foto} />
-                    )
-                }
-
-                {/*
-                    <Foto imageSource="https://i.ibb.co/kJ5Ymg7/20-final.jpg"/>
-
-                <Foto imageSource="https://i.ibb.co/y0qRKTF/8.jpg"/>
-                */}
+                <CSSTransitionGroup
+                    transitionName="timeline"
+                    transitionEnterTimeout={500}
+                    transitionLeaveTimeout={300}
+                >
+                    {
+                        this.state.fotos.map(foto =>
+                            <Foto key={foto.id} foto={foto}/>)
+                    }
+                </CSSTransitionGroup>
 
             </div>
         );

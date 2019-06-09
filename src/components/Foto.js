@@ -1,9 +1,9 @@
 import React, {Component} from "react";
 import {Link} from 'react-router';
 import Pubsub from 'pubsub-js';
-import {URL_LOCAL} from '../environment';
+import {URL_LOCAL, URL_HEROKU} from '../environment';
 
-const URL = URL_LOCAL;
+const URL = URL_HEROKU;
 
 export default class Foto extends Component {
     render() {
