@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import Foto from './Foto';
+import Pubsub from 'pubsub-js';
 import {URL_LOCAL} from '../environment';
 
 const URL = URL_LOCAL;
@@ -12,6 +13,14 @@ export default class Timeline extends Component {
             fotos: []
         }
         this.login = this.props.login;
+    }
+
+    componentWillMount() {
+        Pubsub.subscribe('timeline', (topic, fotos) => {
+            this.setState({
+                fotos //fotos: fotos
+            });
+        })
     }
 
     loadFotos() {
