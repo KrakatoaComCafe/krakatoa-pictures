@@ -1,6 +1,5 @@
 import React, {Component} from "react";
 import {Link} from 'react-router';
-import Pubsub from 'pubsub-js';
 
 export default class Foto extends Component {
     render() {
@@ -14,7 +13,7 @@ export default class Foto extends Component {
 
                 <FotoInfo foto={this.props.foto}/>
 
-                <FotoAtualizacoes foto={this.props.foto} like={this.props.like} comenta={this.props.comenta}/>
+                <FotoAtualizacoes {...this.props}/>
 
             </div>
         );
@@ -45,49 +44,12 @@ class FotoHeader extends Component {
 
 class FotoInfo extends Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            likers: this.props.foto.likers,
-            comentarios: this.props.foto.comentarios
-        }
-    }
-
-    componentWillMount() {
-        Pubsub.subscribe('atualiza-liker', (topic, infoLiker) => {
-            if (this.props.foto.id === infoLiker.fotoId) {
-                const possivelLiker = this.state.likers.find(liker => liker.login === infoLiker.liker.login);
-                if (possivelLiker === undefined) {
-                    const novosLikers = this.state.likers.concat(infoLiker.liker);
-                    this.setState({
-                        likers: novosLikers
-                    });
-                } else { //fim do if interno
-                    const novosLikers = this.state.likers.filter(liker => liker.login !== infoLiker.liker.login);
-                    this.setState({
-                        likers: novosLikers
-                    })
-                }
-            }//if externo
-        });
-
-        Pubsub.subscribe('novos-comentarios', (topic, infoComentario) => {
-            if(this.props.foto.id === infoComentario.fotoId) {
-                const novosComentarios = this.state.comentarios.concat(infoComentario.novoComentario);
-                this.setState({
-                    comentarios: novosComentarios
-                })
-            }
-        });
-    }
-
     render() {
         return (
             <div className="foto-info">
                 <div className="foto-info-likes">
-
                     {
-                        this.state.likers.map(liker => {
+                        this.props.foto.likers.map(liker => {
                             return (
                                 <Link key={liker.login} to={`timeline/${liker.login}`}>
                                     {liker.login}
@@ -95,21 +57,15 @@ class FotoInfo extends Component {
                             );
                         })
                     }
-
                     curtiram
-
                 </div>
-
                 <p className="foto-info-legenda">
                     <a className="foto-info-autor">autor </a>
                     {this.props.foto.comentario}
                 </p>
-
                 <ul className="foto-info-comentarios">
-
-
                     {
-                        this.state.comentarios.map(comentario => {
+                        this.props.foto.comentarios.map(comentario => {
                             return (
                                 <li key={comentario.id} className="comentario">
                                     <Link to={`/timeline/${comentario.login}`} className="foto-info-autor">
@@ -120,7 +76,6 @@ class FotoInfo extends Component {
                             );
                         })
                     }
-
                 </ul>
             </div>
         );
@@ -129,16 +84,8 @@ class FotoInfo extends Component {
 
 class FotoAtualizacoes extends Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            likeada: this.props.foto.likeada
-        }
-    }
-
     like(event) {
         event.preventDefault();
-        this.setState({likeada: !this.state.likeada});
         this.props.like(this.props.foto.id);
     }
 
@@ -152,7 +99,7 @@ class FotoAtualizacoes extends Component {
         return (
             <section className="fotoAtualizacoes">
                 <a onClick={this.like.bind(this)}
-                   className={this.state.likeada ? 'fotoAtualizacoes-like-ativo' : 'fotoAtualizacoes-like'}>
+                   className={this.props.foto.likeada ? 'fotoAtualizacoes-like-ativo' : 'fotoAtualizacoes-like'}>
                     Likar
                 </a>
                 <form className="fotoAtualizacoes-form" onSubmit={this.comenta.bind(this)}>
