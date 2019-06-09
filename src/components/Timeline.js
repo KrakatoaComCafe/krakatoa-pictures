@@ -2,9 +2,7 @@ import React, {Component} from "react";
 import Foto from './Foto';
 import Pubsub from 'pubsub-js';
 import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
-import {URL_LOCAL, URL_HEROKU} from '../environment';
-
-const URL = URL_HEROKU;
+import {URL} from '../environment';
 
 export default class Timeline extends Component {
 
@@ -57,6 +55,59 @@ export default class Timeline extends Component {
         }
     }
 
+    like(fotoId) {
+        const url = URL + `/api/fotos/${fotoId}` +
+            `/like?X-AUTH-TOKEN=${localStorage.getItem('auth-token')}`;
+
+        fetch(url, {method: 'POST'})
+            .then(res => {
+                if (res.ok) {
+                    return res.json();
+                } else {
+                    throw new Error('Não foi possível realizar o like da foto');
+                }
+            })
+            .then(liker => {
+                Pubsub.publish('atualiza-liker', {
+                    liker, //liker: liker
+                    fotoId //fotoId: fotoId
+                });
+            });
+    }
+
+    comenta(fotoId, textoComentario) {
+        const url = URL +
+            `/api/fotos/${fotoId}/comment` +
+            `?X-AUTH-TOKEN=${localStorage.getItem('auth-token')}`;
+
+        const requestInfo = {
+            method: 'POST',
+            body: JSON.stringify(
+                {
+                    texto: textoComentario
+                }),
+            headers: new Headers(
+                {
+                    'Content-type': 'application/json'
+                })
+        };
+
+        fetch(url, requestInfo)
+            .then(res => {
+                if (res.ok) {
+                    return res.json();
+                } else {
+                    throw new Error('Não foi possível comentar');
+                }
+            })
+            .then(novoComentario => {
+                Pubsub.publish('novos-comentarios', {
+                    fotoId, //fotoId: fotoId
+                    novoComentario // novoComentario: novoComentario
+                });
+            });
+    }
+
     render() {
         return (
 
@@ -69,7 +120,7 @@ export default class Timeline extends Component {
                 >
                     {
                         this.state.fotos.map(foto =>
-                            <Foto key={foto.id} foto={foto}/>)
+                            <Foto key={foto.id} foto={foto} like={this.like} comenta={this.comenta}/>)
                     }
                 </CSSTransitionGroup>
 

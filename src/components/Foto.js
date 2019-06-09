@@ -1,9 +1,6 @@
 import React, {Component} from "react";
 import {Link} from 'react-router';
 import Pubsub from 'pubsub-js';
-import {URL_LOCAL, URL_HEROKU} from '../environment';
-
-const URL = URL_HEROKU;
 
 export default class Foto extends Component {
     render() {
@@ -17,7 +14,7 @@ export default class Foto extends Component {
 
                 <FotoInfo foto={this.props.foto}/>
 
-                <FotoAtualizacoes foto={this.props.foto}/>
+                <FotoAtualizacoes foto={this.props.foto} like={this.props.like} comenta={this.props.comenta}/>
 
             </div>
         );
@@ -141,59 +138,14 @@ class FotoAtualizacoes extends Component {
 
     like(event) {
         event.preventDefault();
-        const url = URL + `/api/fotos/${this.props.foto.id}` +
-            `/like?X-AUTH-TOKEN=${localStorage.getItem('auth-token')}`;
-
-        fetch(url, {method: 'POST'})
-            .then(res => {
-                if (res.ok) {
-                    return res.json();
-                } else {
-                    throw new Error('Não foi possível realizar o like da foto');
-                }
-            })
-            .then(liker => {
-                this.setState({likeada: !this.state.likeada});
-                Pubsub.publish('atualiza-liker', {
-                    liker, //liker: liker
-                    fotoId: this.props.foto.id
-                });
-            })
+        this.setState({likeada: !this.state.likeada});
+        this.props.like(this.props.foto.id);
     }
 
     comenta(event) {
         event.preventDefault();
 
-        const url = URL +
-            `/api/fotos/${this.props.foto.id}/comment` +
-            `?X-AUTH-TOKEN=${localStorage.getItem('auth-token')}`;
-
-        const requestInfo = {
-            method: 'POST',
-            body: JSON.stringify(
-                {
-                    texto: this.comentario.value
-                }),
-            headers: new Headers(
-                {
-                    'Content-type': 'application/json'
-                })
-        };
-
-        fetch(url, requestInfo)
-            .then(res => {
-                if (res.ok) {
-                    return res.json();
-                } else {
-                    throw new Error('Não foi possível comentar');
-                }
-            })
-            .then(novoComentario => {
-                Pubsub.publish('novos-comentarios', {
-                    fotoId: this.props.foto.id,
-                    novoComentario // novoComentario: novoComentario
-                });
-            });
+        this.props.comenta(this.props.foto.id, this.comentario.value);
     }
 
     render() {
