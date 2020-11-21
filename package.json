@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "pubsub-js": "^1.7.0",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
-    "react-router": "^3.2.1",
-    "react-scripts": "3.0.1",
+    "pubsub-js": "^1.9.1",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0",
+    "react-router": "^3.2.6",
+    "react-scripts": "^4.0.0",
     "react-transition-group": "^1.2.1"
   },
   "scripts": {
